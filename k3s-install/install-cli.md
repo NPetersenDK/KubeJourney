@@ -256,12 +256,3 @@ Node        Local AS   Peer AS   Peer Address   Session State   Uptime   Family 
 k3s-nd-01   65001      65001     10.0.14.1      established     5m       ipv4/unicast   19         2
 k3s-nd-02   65001      65001     10.0.14.1      established     2m       ipv4/unicast   19         2
 ```
-
-### Benefits of HA Setup
-
-With both nodes configured, you now have:
-- ✅ **High Availability** - Cluster survives single node failure
-- ✅ **Redundant Control Plane** - Both nodes run etcd and Kubernetes API
-- ✅ **Redundant Workers** - Workloads can run on either node
-- ✅ **BGP Redundancy** - Both nodes advertise routes to the router
-- ✅ **Load Distribution** - Services are distributed across nodes
