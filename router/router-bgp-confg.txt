@@ -1,0 +1,10 @@
+router bgp 65001
+ bgp router-id 10.0.14.1
+ neighbor 10.0.14.21 remote-as 65001
+ neighbor 10.0.14.21 timers 3 9
+ !
+ address-family ipv4 unicast
+  neighbor 10.0.14.21 activate
+  redistribute connected
+  redistribute kernel
+ exit-address-family

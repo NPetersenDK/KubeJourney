@@ -1,0 +1,12 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "lb-pool"
+  labels:
+    advertise: "bgp"
+spec:
+  blocks:
+  - cidr: "10.201.0.0/24"
+  serviceSelector:
+    matchLabels:
+      bgp: "pool-a"

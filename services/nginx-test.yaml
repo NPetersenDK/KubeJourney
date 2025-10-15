@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-pod
+  labels:
+    app: simple-pod
+spec:
+  containers:
+  - name: my-app-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  labels:
+    bgp: "pool-a"
+    bgp-announce: "true"
+spec:
+  selector:
+    app: simple-pod
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
