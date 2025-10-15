@@ -6,3 +6,4 @@ router bgp 65000
   neighbor BGP-KUBE-01 remote-as external
   neighbor BGP-KUBE-01 timers 3 9
   neighbor 10.0.14.21 peer-group BGP-KUBE-01
+  neighbor 10.0.14.22 peer-group BGP-KUBE-01

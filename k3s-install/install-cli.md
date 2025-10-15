@@ -64,7 +64,13 @@ Set your API server details and install Cilium with BGP control plane enabled:
 ```bash
 API_SERVER_IP=10.0.14.21
 API_SERVER_PORT=6443
-cilium install   --set k8sServiceHost=${API_SERVER_IP}   --set k8sServicePort=${API_SERVER_PORT}   --set kubeProxyReplacement=true   --set bgpControlPlane.enabled=true
+cilium install \
+  --set k8sServiceHost=${API_SERVER_IP} \
+  --set k8sServicePort=${API_SERVER_PORT} \
+  --set kubeProxyReplacement=true \
+  --set bgpControlPlane.enabled=true \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList=172.20.0.0/16 \
+  --set ipv4NativeRoutingCIDR=172.20.0.0/16
 ```
 
 Wait for Cilium to be ready (drink coffee while Cilium installs):
@@ -144,3 +150,118 @@ root@k3s-nd-01:/home/nikolaj/services# cilium bgp peers
 Node        Local AS   Peer AS   Peer Address   Session State   Uptime   Family         Received   Advertised
 k3s-nd-01   65001      65001     10.0.14.1      established     13s      ipv4/unicast   19         2
 ```
+
+## Add Second Node for High Availability (Optional)
+
+To create a highly available cluster with redundancy, add a second node that functions as both control plane and worker.
+
+### Step 1: Get Node Token from First Node
+
+On the first node, retrieve the token needed to join additional nodes:
+
+```bash
+sudo cat /var/lib/rancher/k3s/server/node-token
+```
+
+Copy this token - you'll need it for the second node.
+
+### Step 2: Install K3s on Second Node
+
+On the second node, install K3s as a server (control plane + worker):
+
+```bash
+curl -sfL https://get.k3s.io | sh -s - server \
+  --server https://10.0.14.21:6443 \
+  --token fffffffff \
+  --flannel-backend=none \
+  --disable-network-policy
+```
+
+Replace:
+- `<FIRST_NODE_IP>` - IP address of your first K3s node (e.g., `10.0.14.21`)
+- `<NODE_TOKEN>` - The token you copied from the first node
+
+Example:
+```bash
+curl -sfL https://get.k3s.io | sh -s - server \
+  --server https://10.0.14.21:6443 \
+  --token K10abcdef1234567890::server:abcdef1234567890 \
+  --flannel-backend=none \
+  --disable-network-policy
+```
+
+Wait for the installation to complete:
+
+```bash
+sleep 10
+```
+
+### Step 3: Configure Kubeconfig on Second Node
+
+Set up kubeconfig access on the second node:
+
+```bash
+sudo chmod 600 /etc/rancher/k3s/k3s.yaml
+echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> $HOME/.bashrc
+source $HOME/.bashrc
+mkdir -p $HOME/.kube
+sudo cp -i /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+echo "export KUBECONFIG=$HOME/.kube/config" >> $HOME/.bashrc
+source $HOME/.bashrc
+```
+
+### Step 4: Verify Both Nodes
+
+From either node, verify that both nodes are in the cluster:
+
+```bash
+kubectl get nodes -o wide
+```
+
+Expected output showing both nodes with control-plane, etcd, and master roles:
+
+```
+NAME         STATUS   ROLES                       AGE   VERSION
+k3s-nd-01    Ready    control-plane,etcd,master   30m   v1.28.x+k3s1
+k3s-nd-02    Ready    control-plane,etcd,master   5m    v1.28.x+k3s1
+```
+
+Check that all pods are running on both nodes:
+
+```bash
+kubectl get pods -A -o wide
+```
+
+### Step 5: Configure BGP on Second Node
+
+Label the second node for BGP peering:
+
+```bash
+kubectl label nodes k3s-nd-02 bgp-policy=default
+```
+
+### Step 6: Verify BGP Status on Both Nodes
+
+Check BGP peers from the first node:
+
+```bash
+cilium bgp peers
+```
+
+Expected output showing both nodes:
+
+```
+Node        Local AS   Peer AS   Peer Address   Session State   Uptime   Family         Received   Advertised
+k3s-nd-01   65001      65001     10.0.14.1      established     5m       ipv4/unicast   19         2
+k3s-nd-02   65001      65001     10.0.14.1      established     2m       ipv4/unicast   19         2
+```
+
+### Benefits of HA Setup
+
+With both nodes configured, you now have:
+- ✅ **High Availability** - Cluster survives single node failure
+- ✅ **Redundant Control Plane** - Both nodes run etcd and Kubernetes API
+- ✅ **Redundant Workers** - Workloads can run on either node
+- ✅ **BGP Redundancy** - Both nodes advertise routes to the router
+- ✅ **Load Distribution** - Services are distributed across nodes
