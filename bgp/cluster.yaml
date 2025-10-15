@@ -8,10 +8,10 @@ spec:
       bgp-policy: default
   bgpInstances:
   - name: "instance-65001"
-    localASN: 65001
+    localASN: 65020
     peers:
     - name: "UDM-PRO"
-      peerASN: 65001
+      peerASN: 65000
       peerAddress: 10.0.14.1
       peerConfigRef:
         name: "cilium-peer"

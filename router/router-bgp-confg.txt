@@ -1,10 +1,8 @@
-router bgp 65001
- bgp router-id 10.0.14.1
- neighbor 10.0.14.21 remote-as 65001
- neighbor 10.0.14.21 timers 3 9
- !
- address-family ipv4 unicast
-  neighbor 10.0.14.21 activate
-  redistribute connected
-  redistribute kernel
- exit-address-family
+router bgp 65000
+  bgp bestpath as-path multipath-relax
+  no bgp ebgp-requires-policy
+  bgp router-id 10.0.14.1
+  neighbor BGP-KUBE-01 peer-group
+  neighbor BGP-KUBE-01 remote-as external
+  neighbor BGP-KUBE-01 timers 3 9
+  neighbor 10.0.14.21 peer-group BGP-KUBE-01

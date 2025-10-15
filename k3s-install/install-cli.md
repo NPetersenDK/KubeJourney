@@ -13,7 +13,7 @@ apt install curl sudo
 Install K3s with Cilium-compatible settings (no Flannel, no kube-proxy, no servicelb):
 
 ```bash
-curl -sfL https://get.k3s.io | sh -s - --flannel-backend=none --disable-kube-proxy --disable servicelb --disable-network-policy --cluster-init
+curl -sfL https://get.k3s.io | sh -s - --flannel-backend=none --disable-network-policy --cluster-init
 ```
 
 Wait a few seconds before continuing:
