@@ -1,17 +1,26 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: simple-pod-nd2
+  name: nginx-deployment-nd2
   labels:
-    app: simple-pod-nd2
+    app: nginx-nd2
 spec:
-  nodeSelector:
-    kubernetes.io/hostname: k3s-nd-02
-  containers:
-  - name: my-app-container
-    image: nginx:latest
-    ports:
-    - containerPort: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-nd2
+  template:
+    metadata:
+      labels:
+        app: nginx-nd2
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3s-nd-02
+      containers:
+      - name: my-app-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -22,7 +31,7 @@ metadata:
     bgp-announce: "true"
 spec:
   selector:
-    app: simple-pod-nd2
+    app: nginx-nd2
   ports:
   - protocol: TCP
     port: 80
