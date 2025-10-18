@@ -13,7 +13,13 @@ apt install curl sudo
 Install K3s with Cilium-compatible settings (no Flannel, no kube-proxy, no servicelb):
 
 ```bash
-curl -sfL https://get.k3s.io | sh -s - --flannel-backend=none --disable-network-policy --cluster-init
+curl -sfL https://get.k3s.io | sh -s - \
+  --flannel-backend=none \
+  --disable-network-policy \
+  --disable servicelb \
+  --cluster-init \
+  --cluster-cidr=172.20.0.0/16 \
+  --service-cidr=172.21.0.0/16
 ```
 
 Wait a few seconds before continuing:
@@ -70,8 +76,13 @@ cilium install \
   --set kubeProxyReplacement=true \
   --set bgpControlPlane.enabled=true \
   --set ipam.operator.clusterPoolIPv4PodCIDRList=172.20.0.0/16 \
-  --set ipv4NativeRoutingCIDR=172.20.0.0/16
+  --set ipv4NativeRoutingCIDR=172.20.0.0/16 \
+  --set routingMode=native \
+  --set autoDirectNodeRoutes=true \
+  --set ipv4.enabled=true
 ```
+
+cilium install --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16" --set bgpControlPlane.enabled=true
 
 Wait for Cilium to be ready (drink coffee while Cilium installs):
 
@@ -172,9 +183,12 @@ On the second node, install K3s as a server (control plane + worker):
 ```bash
 curl -sfL https://get.k3s.io | sh -s - server \
   --server https://10.0.14.21:6443 \
-  --token fffffffff \
+  --token <NODE_TOKEN> \
   --flannel-backend=none \
-  --disable-network-policy
+  --disable-network-policy \
+  --disable servicelb \
+  --cluster-cidr=172.20.0.0/16 \
+  --service-cidr=172.21.0.0/16
 ```
 
 Replace:

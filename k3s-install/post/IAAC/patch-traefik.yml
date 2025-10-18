@@ -1,0 +1,9 @@
+# Strategic Merge Patch for Traefik Service
+# Apply with: kubectl patch svc traefik -n kube-system --type=strategic --patch-file patch-traefik.yml
+
+metadata:
+  labels:
+    bgp: "pool-a"
+    bgp-announce: "true"
+spec:
+  externalTrafficPolicy: Local

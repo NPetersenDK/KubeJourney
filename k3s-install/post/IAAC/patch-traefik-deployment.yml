@@ -1,0 +1,19 @@
+# Patch for Traefik Deployment - Adds redundancy with 2 replicas
+# Apply with: kubectl patch deployment traefik -n kube-system --type=strategic --patch-file patch-traefik-deployment.yml
+
+spec:
+  replicas: 2
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - traefik
+              topologyKey: kubernetes.io/hostname

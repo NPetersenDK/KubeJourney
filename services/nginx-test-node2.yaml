@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-pod-nd2
+  labels:
+    app: simple-pod-nd2
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-nd-02
+  containers:
+  - name: my-app-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service-nd2
+  labels:
+    bgp: "pool-a"
+    bgp-announce: "true"
+spec:
+  selector:
+    app: simple-pod-nd2
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+  externalTrafficPolicy: Local
