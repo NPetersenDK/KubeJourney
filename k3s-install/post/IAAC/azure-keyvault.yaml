@@ -1,0 +1,19 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: azure-secret-store
+  namespace: external-secrets
+spec:
+  provider:
+    azurekv:
+      tenantId: "XXXXX-d7f9-XXXXXX"
+      vaultUrl: https://XXXX..vault.azure.net/
+      authSecretRef:
+        clientId:
+          name: azure-secret-sp
+          key: ClientID
+          namespace: external-secrets
+        clientSecret:
+          name: azure-secret-sp
+          key: ClientSecret
+          namespace: external-secrets
