@@ -15,7 +15,7 @@ data:
           source = "network",
         }
       }
-      
+
       forward_to = [loki.write.local.receiver]
     }
 
@@ -103,6 +103,7 @@ rules:
   - services
   - endpoints
   - pods
+  - pods/log
   - events
   verbs: ["get", "list", "watch"]
 - apiGroups:
