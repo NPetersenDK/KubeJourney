@@ -22,13 +22,14 @@ data:
         maxLines: 1000
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: grafana
   namespace: monitoring
   labels:
     app: grafana
 spec:
+  serviceName: grafana
   replicas: 1
   selector:
     matchLabels:
@@ -69,11 +70,19 @@ spec:
             cpu: 500m
             memory: 512Mi
       volumes:
-      - name: grafana-storage
-        emptyDir: {}
       - name: grafana-datasources
         configMap:
           name: grafana-datasources
+  volumeClaimTemplates:
+  - metadata:
+      name: grafana-storage
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 2Gi
 ---
 apiVersion: v1
 kind: Service
