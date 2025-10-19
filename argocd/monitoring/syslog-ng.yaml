@@ -24,7 +24,7 @@ data:
 
     destination d_alloy {
       syslog("alloy.monitoring.svc.cluster.local" transport("udp") port(514)
-        template("<$PRI>$DATE $HOST $PROGRAM: $MSG\n"));
+        template("<13>$ISODATE $HOST syslog-ng: $MSG\\n")
     };
 
     log {
