@@ -5,10 +5,17 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://github.com/NPetersenDK/KubeJourney.git
-    targetRevision: main
-    path: argocd/keyvault
+  sources:
+    # External Secrets Operator Helm Chart
+    - chart: external-secrets
+      repoURL: https://charts.external-secrets.io
+      targetRevision: 0.11.0
+      helm:
+        releaseName: external-secrets
+    # KeyVault configuration manifests
+    - repoURL: https://github.com/NPetersenDK/KubeJourney.git
+      targetRevision: main
+      path: argocd/keyvault
   destination:
     server: https://kubernetes.default.svc
     namespace: external-secrets
@@ -18,3 +25,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - Replace=true
