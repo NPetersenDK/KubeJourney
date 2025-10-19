@@ -71,27 +71,10 @@ data:
       forward_to = [loki.write.local.receiver]
     }
 
-    // Prometheus metrics scraping
-    prometheus.scrape "kubernetes_pods" {
-      targets = discovery.relabel.pod_logs.output
-      forward_to = [prometheus.remote_write.local.receiver]
-
-      clustering {
-        enabled = false
-      }
-    }
-
     // Write logs to Loki
     loki.write "local" {
       endpoint {
         url = "http://loki:3100/loki/api/v1/push"
-      }
-    }
-
-    // Write metrics to Prometheus (optional - if you want Alloy to also scrape metrics)
-    prometheus.remote_write "local" {
-      endpoint {
-        url = "http://prometheus:9090/api/v1/write"
       }
     }
 ---
