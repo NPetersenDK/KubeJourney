@@ -8,9 +8,10 @@ data:
     // Syslog listener for network devices
     loki.source.syslog "network_devices" {
       listener {
-        address  = "0.0.0.0:514"
-        protocol = "udp"
-        labels   = {
+        address        = "0.0.0.0:514"
+        protocol       = "udp"
+        syslog_format  = "rfc3164"
+        labels         = {
           job    = "syslog",
           source = "network",
         }
