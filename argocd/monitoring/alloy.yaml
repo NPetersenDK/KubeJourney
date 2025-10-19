@@ -5,6 +5,19 @@ metadata:
   namespace: monitoring
 data:
   config.alloy: |
+    // Syslog listener for network devices
+    loki.source.syslog "network_devices" {
+      listener {
+        address  = "0.0.0.0:514"
+        protocol = "udp"
+        labels   = {
+          job    = "syslog",
+          source = "network",
+        }
+      }
+      forward_to = [loki.write.local.receiver]
+    }
+
     // Kubernetes pod logs discovery and collection
     discovery.kubernetes "pods" {
       role = "pod"
@@ -145,6 +158,12 @@ spec:
         - containerPort: 12345
           name: http
           protocol: TCP
+        - containerPort: 514
+          name: syslog-udp
+          protocol: UDP
+        - containerPort: 514
+          name: syslog-tcp
+          protocol: TCP
         env:
         - name: HOSTNAME
           valueFrom:
@@ -192,4 +211,12 @@ spec:
     protocol: TCP
     port: 12345
     targetPort: 12345
+  - name: syslog-udp
+    protocol: UDP
+    port: 514
+    targetPort: 514
+  - name: syslog-tcp
+    protocol: TCP
+    port: 514
+    targetPort: 514
   type: ClusterIP

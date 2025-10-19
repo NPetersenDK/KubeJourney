@@ -17,12 +17,21 @@ data:
     };
 
     source s_network {
-        udp(ip(0.0.0.0) port(514) flags(no-parse));
-        tcp(ip(0.0.0.0) port(514) flags(no-parse));
+        udp(ip(0.0.0.0) port(514));
+        tcp(ip(0.0.0.0) port(514));
+    };
+
+    destination d_alloy {
+        network(
+            "alloy.monitoring.svc.cluster.local"
+            transport("udp")
+            port(514)
+        );
     };
 
     log {
       source(s_network);
+      destination(d_alloy);
       destination{ stdout();};
     };
 ---
