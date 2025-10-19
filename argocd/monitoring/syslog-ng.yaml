@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: syslog-ng-config
+  namespace: monitoring
+data:
+  syslog-ng.conf: |
+    @version: 3.38
+    options {
+        chain_hostnames(no);
+        flush_lines(0);
+        use_dns(no);
+        use_fqdn(no);
+        keep_hostname(yes);
+    };
+
+    source s_network {
+        udp(ip(0.0.0.0) port(514));
+        tcp(ip(0.0.0.0) port(514));
+    };
+
+    destination d_alloy {
+        udp("alloy.monitoring.svc.cluster.local" port(514));
+    };
+
+    log {
+        source(s_network);
+        destination(d_alloy);
+    };
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syslog-ng
+  namespace: monitoring
+  labels:
+    app: syslog-ng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syslog-ng
+  template:
+    metadata:
+      labels:
+        app: syslog-ng
+    spec:
+      containers:
+      - name: syslog-ng
+        image: balabit/syslog-ng:latest
+        ports:
+        - containerPort: 514
+          name: syslog-tcp
+          protocol: TCP
+        - containerPort: 514
+          name: syslog-udp
+          protocol: UDP
+        volumeMounts:
+        - name: config
+          mountPath: /etc/syslog-ng
+      volumes:
+      - name: config
+        configMap:
+          name: syslog-ng-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: syslog-ng
+  namespace: monitoring
+  labels:
+    app: syslog-ng
+spec:
+  selector:
+    app: syslog-ng
+  ports:
+  - name: syslog-tcp
+    protocol: TCP
+    port: 514
+    targetPort: 514
+  - name: syslog-udp
+    protocol: UDP
+    port: 514
+    targetPort: 514
+  type: LoadBalancer
+  externalTrafficPolicy: Local
