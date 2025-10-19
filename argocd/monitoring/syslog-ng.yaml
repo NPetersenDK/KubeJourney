@@ -26,11 +26,11 @@ data:
       syslog("alloy.monitoring.svc.cluster.local" transport("udp") port(514));
     };
 
-    log {
-        source{ s_network };
-        destination{ d_alloy };
-        destination{ stdout(); }
-    };
+  log {
+    source(s_network);
+    destination(d_alloy);
+    destination{stdout();};
+  };
 ---
 apiVersion: apps/v1
 kind: Deployment
