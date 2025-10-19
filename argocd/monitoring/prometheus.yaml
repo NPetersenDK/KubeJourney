@@ -64,11 +64,6 @@ data:
           action: replace
           target_label: kubernetes_pod_name
 
-      # Syslog exporter
-      - job_name: 'syslog-exporter'
-        static_configs:
-        - targets: ['syslog-exporter:9468']
-
       # Node exporter for host metrics
       - job_name: 'node-exporter'
         kubernetes_sd_configs:

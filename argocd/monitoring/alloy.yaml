@@ -9,22 +9,13 @@ data:
     loki.source.syslog "network_devices" {
       listener {
         address  = "0.0.0.0:514"
-        protocol = "rfc5424"
+        protocol = "udp"
         labels   = {
           job    = "syslog",
           source = "network",
         }
       }
-
-      listener {
-        address  = "0.0.0.0:514"
-        protocol = "rfc3164"
-        labels   = {
-          job    = "syslog",
-          source = "network",
-        }
-      }
-
+      
       forward_to = [loki.write.local.receiver]
     }
 
