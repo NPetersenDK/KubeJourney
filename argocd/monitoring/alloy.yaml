@@ -11,11 +11,20 @@ data:
         address        = "0.0.0.0:514"
         protocol       = "udp"
         syslog_format  = "rfc3164"
-        use_incoming_timestamp = false
         labels         = {
           job    = "syslog",
           source = "network",
         }
+      }
+      forward_to = [loki.process.fix_timestamp.receiver]
+    }
+
+    // Fix timestamp - use current time instead of parsed syslog time
+    loki.process "fix_timestamp" {
+      stage.timestamp {
+        source = "timestamp"
+        format = "RFC3339"
+        action_on_failure = "fudge"
       }
       forward_to = [loki.write.local.receiver]
     }
