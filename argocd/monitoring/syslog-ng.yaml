@@ -27,8 +27,9 @@ data:
     };
 
     log {
-        source(s_network);
-        destination(d_alloy);
+        source{ s_network };
+        destination{ d_alloy };
+        destination{ stdout(); }
     };
 ---
 apiVersion: apps/v1
