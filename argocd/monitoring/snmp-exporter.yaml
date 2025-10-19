@@ -1,0 +1,3 @@
+# SNMP Exporter - Disabled for now
+# To enable, add the deployment, configmap, and service configuration here
+
