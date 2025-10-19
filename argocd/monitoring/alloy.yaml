@@ -15,7 +15,15 @@ data:
           source = "network",
         }
       }
-
+      listener {
+        address  = "0.0.0.0:514"
+        protocol = "tcp"
+        labels   = {
+          job    = "syslog",
+          source = "network",
+        }
+      }
+      
       forward_to = [loki.write.local.receiver]
     }
 
