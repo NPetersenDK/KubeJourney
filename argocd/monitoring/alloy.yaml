@@ -212,6 +212,8 @@ metadata:
   namespace: monitoring
   labels:
     app: alloy
+    bgp: "pool-a"
+    bgp-announce: "true"
 spec:
   selector:
     app: alloy
