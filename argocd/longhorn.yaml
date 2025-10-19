@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Longhorn Helm Chart
+    - chart: longhorn
+      repoURL: https://charts.longhorn.io/
+      targetRevision: v1.10.0
+      helm:
+        values: |
+          preUpgradeChecker:
+            jobEnabled: false
+    # Additional Longhorn manifests (ingress, storageclass)
+    - repoURL: https://github.com/NPetersenDK/KubeJourney.git
+      targetRevision: main
+      path: argocd/longhorn
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
