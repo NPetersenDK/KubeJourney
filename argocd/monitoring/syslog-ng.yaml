@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 data:
   syslog-ng.conf: |
-    @version: 3.38
+    @version: 4.10
     options {
         chain_hostnames(no);
         flush_lines(0);
