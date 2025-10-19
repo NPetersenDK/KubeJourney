@@ -20,7 +20,7 @@ data:
     };
 
     destination d_alloy {
-        udp("alloy.monitoring.svc.cluster.local" port(514));
+      syslog("alloy.monitoring.svc.cluster.local" transport("udp") port(514));
     };
 
     log {
