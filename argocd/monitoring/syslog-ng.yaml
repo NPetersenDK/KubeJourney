@@ -12,7 +12,6 @@ data:
       use_dns(no);
       use_fqdn(no);
       keep_hostname(yes);
-      log-level(debug);
       log_fifo_size(10000);
       log_msg_size(8192);
     };
