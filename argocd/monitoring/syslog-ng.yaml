@@ -13,8 +13,8 @@ data:
       use_fqdn(no);
       keep_hostname(yes);
       debug_flag(all);
-      log-fifo-size(10000);
-      log-msg-size(8192);
+      log_fifo_size(10000);
+      log_msg_size(8192);
     };
 
     source s_network {
