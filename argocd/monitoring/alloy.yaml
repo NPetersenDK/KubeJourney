@@ -157,7 +157,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
       - name: alloy
-        image: grafana/alloy:1.11.2
+        image: grafana/alloy:v1.11.2
         args:
           - run
           - /etc/alloy/config.alloy
