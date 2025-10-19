@@ -11,6 +11,11 @@ data:
       http_listen_port: 3100
       grpc_listen_port: 9096
 
+    ingester:
+      wal:
+        enabled: false
+        dir: /loki/wal
+
     common:
       path_prefix: /loki
       storage:
