@@ -85,8 +85,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 10001
-        runAsUser: 10001
-        runAsNonRoot: true
       initContainers:
       - name: init-chown
         image: busybox:latest
