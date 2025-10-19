@@ -51,6 +51,8 @@ spec:
     metadata:
       labels:
         app: syslog-ng
+      annotations:
+        prometheus.io/scrape: "false"
     spec:
       containers:
       - name: syslog-ng
