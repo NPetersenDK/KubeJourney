@@ -212,6 +212,14 @@ spec:
     protocol: TCP
     port: 12345
     targetPort: 12345
+  - name: syslog-udp
+    protocol: UDP
+    port: 514
+    targetPort: 514
+  - name: syslog-tcp
+    protocol: TCP
+    port: 514
+    targetPort: 514
   type: ClusterIP
 ---
 # LoadBalancer service to expose syslog externally via BGP
