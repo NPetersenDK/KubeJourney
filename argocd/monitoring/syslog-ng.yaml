@@ -23,10 +23,9 @@ data:
     };
 
     destination d_alloy {
-      network("alloy.monitoring.svc.cluster.local" 
+      syslog("alloy.monitoring.svc.cluster.local" 
         transport("udp") 
         port(514)
-        template("<13>$DATE $HOST ${PROGRAM:-syslog}: $MSG\n")
       );
     };
 
