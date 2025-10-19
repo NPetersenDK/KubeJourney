@@ -73,6 +73,8 @@ metadata:
 spec:
   selector:
     app: syslog-ng
+    bgp: "pool-a"
+    bgp-announce: "true"
   ports:
   - name: syslog-tcp
     protocol: TCP
