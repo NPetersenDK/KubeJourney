@@ -78,6 +78,24 @@ spec:
       labels:
         app: loki
     spec:
+      securityContext:
+        fsGroup: 10001
+        runAsUser: 10001
+        runAsNonRoot: true
+      initContainers:
+      - name: init-chown
+        image: busybox:latest
+        command:
+          - sh
+          - -c
+          - |
+            chown -R 10001:10001 /loki
+            chmod -R 755 /loki
+        volumeMounts:
+        - name: storage
+          mountPath: /loki
+        securityContext:
+          runAsUser: 0
       containers:
       - name: loki
         image: grafana/loki:3.5.7
