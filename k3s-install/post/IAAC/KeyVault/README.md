@@ -1,5 +1,4 @@
 # Prerequisites
-
 - An existing Azure Key Vault.
 - An App Registration in Entra ID
 - Permissions granted to the App Registration to access the Key Vault secrets.
@@ -13,6 +12,12 @@
   - KEY_VAULT_URL
 
 - Run the following command: 
+```bash
+helm repo add external-secrets https://charts.external-secrets.io  
+helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace
+```
+
+- Create a Kubernetes secret to store the Service Principal credentials:
 ```bash
 kubectl create secret generic azure-secret-sp \
   --from-literal=ClientID="CLIENTID" \
@@ -65,3 +70,8 @@ env:
         name: all-keyvault-secrets
         key: <your-keyvault-secret-name>
 ```
+
+
+
+# Mentions
+https://surajblog.medium.com/external-secret-operator-integration-with-azure-key-vault-6eea4168bfeb
