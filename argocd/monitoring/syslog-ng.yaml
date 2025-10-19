@@ -7,11 +7,14 @@ data:
   syslog-ng.conf: |
     @version: 4.10
     options {
-        chain_hostnames(no);
-        flush_lines(0);
-        use_dns(no);
-        use_fqdn(no);
-        keep_hostname(yes);
+      chain_hostnames(no);
+      flush_lines(0);
+      use_dns(no);
+      use_fqdn(no);
+      keep_hostname(yes);
+      debug-flag(all);
+      log-fifo-size(10000);
+      log-msg-size(8192);
     };
 
     source s_network {
