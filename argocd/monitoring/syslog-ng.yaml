@@ -22,23 +22,16 @@ data:
         tcp(ip(0.0.0.0) port(514) flags(no-parse));
     };
 
-    # Rewrite to ensure proper RFC3164 format
-    rewrite r_rfc3164 {
-        set("13", value("PRI"));  # Facility 1 (user), Severity 5 (notice)
-        set("$HOUR:$MIN:$SEC", value("TIME"));
-    };
-
     destination d_alloy {
       network("alloy.monitoring.svc.cluster.local" 
         transport("udp") 
         port(514)
-        template("<$PRI>$DATE $HOST $PROGRAM[${PID}]: $MSG\n")
+        template("<13>$DATE $HOST ${PROGRAM:-syslog}: $MSG\n")
       );
     };
 
     log {
       source(s_network);
-      rewrite(r_rfc3164);
       destination(d_alloy);
       destination{ stdout();};
     };
