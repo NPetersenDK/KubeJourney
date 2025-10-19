@@ -22,16 +22,8 @@ data:
         tcp(ip(0.0.0.0) port(514) flags(no-parse));
     };
 
-    destination d_alloy {
-      syslog("alloy.monitoring.svc.cluster.local" 
-        transport("udp") 
-        port(514)
-      );
-    };
-
     log {
       source(s_network);
-      destination(d_alloy);
       destination{ stdout();};
     };
 ---

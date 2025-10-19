@@ -5,20 +5,6 @@ metadata:
   namespace: monitoring
 data:
   config.alloy: |
-    // Syslog receiver for network devices
-    loki.source.syslog "network_devices" {
-      listener {
-        address  = "0.0.0.0:514"
-        protocol = "udp"
-        labels   = {
-          job    = "syslog",
-          source = "network",
-        }
-      }
-      
-      forward_to = [loki.write.local.receiver]
-    }
-
     // Kubernetes pod logs discovery and collection
     discovery.kubernetes "pods" {
       role = "pod"
@@ -159,12 +145,6 @@ spec:
         - containerPort: 12345
           name: http
           protocol: TCP
-        - containerPort: 514
-          name: syslog-tcp
-          protocol: TCP
-        - containerPort: 514
-          name: syslog-udp
-          protocol: UDP
         env:
         - name: HOSTNAME
           valueFrom:
@@ -212,37 +192,4 @@ spec:
     protocol: TCP
     port: 12345
     targetPort: 12345
-  - name: syslog-udp
-    protocol: UDP
-    port: 514
-    targetPort: 514
-  - name: syslog-tcp
-    protocol: TCP
-    port: 514
-    targetPort: 514
   type: ClusterIP
----
-# LoadBalancer service to expose syslog externally via BGP
-apiVersion: v1
-kind: Service
-metadata:
-  name: alloy-syslog
-  namespace: monitoring
-  labels:
-    app: alloy
-    bgp: "pool-a"
-    bgp-announce: "true"
-spec:
-  selector:
-    app: alloy
-  ports:
-  - name: syslog-tcp
-    protocol: TCP
-    port: 514
-    targetPort: 514
-  - name: syslog-udp
-    protocol: UDP
-    port: 514
-    targetPort: 514
-  type: LoadBalancer
-  externalTrafficPolicy: Local
