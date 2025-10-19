@@ -12,7 +12,7 @@ data:
       use_dns(no);
       use_fqdn(no);
       keep_hostname(yes);
-      debug-flag(all);
+      debug_flag(all);
       log-fifo-size(10000);
       log-msg-size(8192);
     };
