@@ -18,3 +18,4 @@ rm argocd-linux-amd64
 
 ```bash
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer", "externalTrafficPolicy": "Local"}, "metadata": {"labels": {"bgp": "pool-a", "bgp-announce": "true"}}}'
+```
