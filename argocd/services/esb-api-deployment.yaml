@@ -98,9 +98,14 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.middlewares: services-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
+  tls:
+  - hosts:
+    - esb-api.netdc.dk
+    secretName: esb-api-tls
   rules:
-  - host: esb-api.k3s.lab
+  - host: esb-api.netdc.dk
     http:
       paths:
       - path: /
