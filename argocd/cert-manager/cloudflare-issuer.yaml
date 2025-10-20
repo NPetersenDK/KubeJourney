@@ -1,0 +1,46 @@
+---
+# ClusterIssuer for Let's Encrypt staging (for testing)
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # Let's Encrypt staging server
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging
+      key: tls.key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: 
+            secretKeyRef:
+              name: all-keyvault-secrets
+              key: cloudflare-email
+          apiTokenSecretRef:
+            name: all-keyvault-secrets
+            key: cloudflare-api-key
+---
+# ClusterIssuer for Let's Encrypt production
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # Let's Encrypt production server
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod
+      key: tls.key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: 
+            secretKeyRef:
+              name: all-keyvault-secrets
+              key: cloudflare-email
+          apiTokenSecretRef:
+            name: all-keyvault-secrets
+            key: cloudflare-api-key
