@@ -8,16 +8,12 @@ spec:
   acme:
     # Let's Encrypt staging server
     server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: n@nipetersen.dk # Replace with your email for Let's Encrypt notifications
     privateKeySecretRef:
       name: letsencrypt-staging
-      key: tls.key
     solvers:
     - dns01:
         cloudflare:
-          email: 
-            secretKeyRef:
-              name: all-keyvault-secrets
-              key: cloudflare-email
           apiTokenSecretRef:
             name: all-keyvault-secrets
             key: cloudflare-api-key
@@ -31,16 +27,12 @@ spec:
   acme:
     # Let's Encrypt production server
     server: https://acme-v02.api.letsencrypt.org/directory
+    email: n@nipetersen.dk  # Replace with your email for Let's Encrypt notifications
     privateKeySecretRef:
       name: letsencrypt-prod
-      key: tls.key
     solvers:
     - dns01:
         cloudflare:
-          email: 
-            secretKeyRef:
-              name: all-keyvault-secrets
-              key: cloudflare-email
           apiTokenSecretRef:
             name: all-keyvault-secrets
             key: cloudflare-api-key
